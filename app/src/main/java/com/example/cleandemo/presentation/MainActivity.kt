@@ -13,7 +13,15 @@ import com.example.cleandemo.common.Resource
 import com.example.cleandemo.databinding.ActivityMainBinding
 import com.example.cleandemo.presentation.viewmodels.UserPostViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -30,23 +38,48 @@ class MainActivity : AppCompatActivity() {
             insets
         } */
         binding.viewModel = viewmodel
-        binding.lifecycleOwner = this
+//        binding.lifecycleOwner = this
         viewmodel.getData()
 
-        viewmodel.sateFlow.onEach {
-            when(it){
-                /*is Resource.Error -> "Error"
+        CoroutineScope(Dispatchers.Main).launch {
+            viewmodel.sateFlow.collect{
+                when (it) {
+                    /*is Resource.Error -> "Error"
+                    is Resource.Loading -> "Loading"
+                    is Resource.Success -> Log.e("UserPostViewModel", "getData: ${it.data}", )*/
+                    is Resource.Error -> Log.e("MainActivity", "Error State")
+                    is Resource.Loading -> Log.e("MainActivity", "Loading State")
+                    is Resource.Success -> {
+                        Log.e("MainActivity", "${it.data}")
+                        it.data?.let { it1 -> viewmodel.userPostAdapter.setData(it1) }
+                    }
+                }
+            }
+        }
+
+
+       /* viewmodel.sateFlow.onEach {
+            when (it) {
+                *//*is Resource.Error -> "Error"
                 is Resource.Loading -> "Loading"
-                is Resource.Success -> Log.e("UserPostViewModel", "getData: ${it.data}", )*/
+                is Resource.Success -> Log.e("UserPostViewModel", "getData: ${it.data}", )*//*
                 is Resource.Error -> Log.e("MainActivity", "Error State")
-                is Resource.Loading ->Log.e("MainActivity", "Loading State")
+                is Resource.Loading -> Log.e("MainActivity", "Loading State")
                 is Resource.Success -> {
                     Log.e("MainActivity", "${it.data}")
                     it.data?.let { it1 -> viewmodel.userPostAdapter.setData(it1) }
                 }
             }
-        }
+        }*/
     }
 
 
+
+    fun producer(): Flow<Int> = flow<Int> {
+        var list = listOf(1,2,3,4,5,6,7,8,9,10)
+        list.forEach {
+            emit(it)
+            delay(1000)
+        }
+    }
 }

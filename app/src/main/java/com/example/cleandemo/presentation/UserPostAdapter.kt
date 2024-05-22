@@ -1,5 +1,6 @@
 package com.example.cleandemo.presentation
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -11,8 +12,9 @@ import com.example.cleandemo.domain.model.User
 class UserPostAdapter : RecyclerView.Adapter<UserPostAdapter.ViewHolder>() {
     private var userPosts: List<User> = mutableListOf<User>()
 
-    public fun setData(dataList:List<User>){
+     fun setData(dataList:List<User>){
         this.userPosts = dataList
+        notifyDataSetChanged()
     }
 
     class ViewHolder(itemView: UserPostAdapterItemBinding) : RecyclerView.ViewHolder(itemView.root) {

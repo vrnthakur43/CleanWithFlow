@@ -24,9 +24,9 @@ class UserPostViewModel @Inject constructor(val userUseCase: UserUseCase) : View
     val sateFlow: StateFlow<Resource<List<User>>> get() = _userSateFlow
 
     fun getData() {
-
         userUseCase().onEach {
             _userSateFlow.value = it
+            Log.e("usecase", "getData: ${it.data}", )
         }.launchIn(viewModelScope)
 
 

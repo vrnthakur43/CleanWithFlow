@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class UserUseCase (private val userPostRepo: UserPostRepo) {
-    operator fun invoke(): Flow<Resource<List<User>>> = flow {
+    operator fun invoke(): Flow<Resource<List<User>>> = flow<Resource<List<User>>>{
         emit(Resource.Loading())
         try {
             emit(Resource.Success(data = userPostRepo.getUserPost()))
